@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 /**
  * Trait Used to generate uuid for models
  */
-trait UseUuids
+trait UseUuid
 {
     protected static function boot()
     {

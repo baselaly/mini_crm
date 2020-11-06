@@ -30,7 +30,7 @@
             <small>Mini CRM</small>
         </div>
         <div class="card">
-            @include('admin.layouts.errors')
+            @include('includes.errors')
             <div class="body">
                 <form id="sign_in" method="POST" action="">
                     {{ csrf_field() }}
