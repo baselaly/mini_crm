@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Traits\UseUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, UseUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'phone'
     ];
 
     /**
@@ -30,11 +30,72 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
+     * @param mixed $value
+     * 
+     * @return void
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function setNameAttribute($value): void
+    {
+        $this->attributes['name'] = $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return string|null
+     */
+    public function getNameAttribute($value): ?string
+    {
+        return $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return void
+     */
+    public function setPhoneAttribute($value): void
+    {
+        $this->attributes['phone'] = $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return string|null
+     */
+    public function getPhoneAttribute($value): ?string
+    {
+        return $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return void
+     */
+    public function setEmailAttribute($value): void
+    {
+        $this->attributes['email'] = $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return string|null
+     */
+    public function getEmailAttribute($value): ?string
+    {
+        return $value;
+    }
+
+    /**
+     * @param mixed $value
+     * 
+     * @return void
+     */
+    public function setPasswordAttribute($value): void
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 }
