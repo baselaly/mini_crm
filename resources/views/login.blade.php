@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>Sign In | Mini Crm</title>
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
         <div class="card">
             @include('includes.errors')
             <div class="body">
-                <form id="sign_in" method="POST" action="">
+                <form id="sign_in" method="POST" action="{{route('login.post')}}">
                     {{ csrf_field() }}
                     <div class="msg">Sign in to start your session</div>
                     <div class="input-group">
@@ -60,7 +60,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Jquery Core Js -->
     <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>
 
