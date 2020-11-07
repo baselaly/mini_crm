@@ -20,6 +20,8 @@ class User extends Authenticatable
         'name', 'email', 'password', 'phone'
     ];
 
+    protected $appends = ['type'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -97,5 +99,13 @@ class User extends Authenticatable
     public function setPasswordAttribute($value): void
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeAttribute(): ?string
+    {
+        return $this->getRoleNames()[0];
     }
 }

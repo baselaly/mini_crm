@@ -31,7 +31,7 @@ class AuthController extends Controller
             if (!$this->authService->login($request->validated())) {
                 return back()->withErrors('Wrong Credentials');
             }
-            dd(auth()->user());
+            return redirect()->route('users.index');
         } catch (\Throwable $t) {
             return $t->getMessage();
         }
