@@ -26,8 +26,8 @@
 <body class="login-page">
     <div class="login-box">
         <div class="logo">
-            <a href="javascript:void(0);">Admin</a>
-            <small>Mini CRM</small>
+            <a href="javascript:void(0);">Mini-CRM</a>
+            <small></small>
         </div>
         <div class="card">
             @include('includes.errors')

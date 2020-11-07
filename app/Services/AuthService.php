@@ -14,10 +14,7 @@ class AuthService
         return auth()->attempt($credentials);
     }
 
-    /**
-     * @return bool
-     */
-    public function logout(): bool
+    public function logout()
     {
         return auth()->logout();
     }

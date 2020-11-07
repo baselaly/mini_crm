@@ -3,6 +3,7 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use App\QueryFilters\User\IdFilter;
 use App\QueryFilters\User\KeywordFilter;
 use Illuminate\Pipeline\Pipeline;
 
@@ -32,7 +33,8 @@ class UserRepository implements UserRepositoryInterface
         return app(Pipeline::class)
             ->send($this->user->query())
             ->through([
-                new KeywordFilter($data)
+                new KeywordFilter($data),
+                new IdFilter($data)
             ])
             ->thenReturn()
             ->latest()->paginate($perPage);
@@ -48,7 +50,8 @@ class UserRepository implements UserRepositoryInterface
         return app(Pipeline::class)
             ->send($this->user->query())
             ->through([
-                new KeywordFilter($data)
+                new KeywordFilter($data),
+                new IdFilter($data)
             ])
             ->thenReturn()
             ->latest()->firstOrFail();
