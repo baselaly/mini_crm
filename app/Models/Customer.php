@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Authenticatable
+class Customer extends Model
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -18,20 +16,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'phone'
+        'name', 'email', 'phone', 'source', 'employee_id'
     ];
-
-    protected $appends = ['type'];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
     /**
      * @param mixed $value
      * 
@@ -97,24 +83,26 @@ class User extends Authenticatable
      * 
      * @return void
      */
-    public function setPasswordAttribute($value): void
+    public function setSourceAttribute($value): void
     {
-        $this->attributes['password'] = bcrypt($value);
+        $this->attributes['source'] = $value;
     }
 
     /**
-     * @return string
+     * @param mixed $value
+     * 
+     * @return string|null
      */
-    public function getTypeAttribute(): ?string
+    public function getSourceAttribute($value): ?string
     {
-        return $this->getRoleNames()[0];
+        return $value;
     }
 
     /**
-     * @return HasMany
+     * @return BelongsTo
      */
-    public function customers(): HasMany
+    public function employee(): BelongsTo
     {
-        return $this->hasMany('App\Models\Customer', 'employee_id');
+        return $this->belongsTo('App\Models\User', 'employee_id');
     }
 }
