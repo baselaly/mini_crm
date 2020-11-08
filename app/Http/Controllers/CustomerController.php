@@ -45,7 +45,7 @@ class CustomerController extends Controller
         try {
             $validatedData = $request->validated();
             // if no employee id sent in request and pass the validation then its employee so we will inject its id
-            !in_array('employee_id', $validatedData) ? $validatedData['employee_id'] = auth()->id() : '';
+            !array_key_exists('employee_id', $validatedData) ? $validatedData['employee_id'] = auth()->id() : '';
             $this->customerService->create($validatedData);
             return redirect()->route('customers.index')->withMessage('Customer Created Successfully');
         } catch (\Throwable $t) {
@@ -74,7 +74,7 @@ class CustomerController extends Controller
             $validatedData = $request->validated();
             $filters = ['id' => $id];
             // if no employee id sent in request and pass the validation then its employee so we will inject its id
-            if (!in_array('employee_id', $validatedData)) {
+            if (!array_key_exists('employee_id', $validatedData)) {
                 $validatedData['employee_id'] = auth()->id();
                 $filters['employee_id'] = auth()->id();
             }
