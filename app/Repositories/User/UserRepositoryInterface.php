@@ -11,7 +11,7 @@ interface UserRepositoryInterface
      * 
      * @return [type]
      */
-    public function getAll(array $data = [], int $perPage = 10);
+    public function getAll(array $data = [], int $perPage = 0);
 
     /**
      * @param array $data

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Customer\StoreRequest;
 use App\Services\CustomerService;
+use App\Services\UserService;
 
 class CustomerController extends Controller
 {
@@ -21,10 +23,26 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = $this->customerService->getAll(['keyword' => request('keyword')]);
+        $customers = $this->customerService->getAll(['keyword' => request('keyword')], $perPage = 10);
         if (request()->ajax()) {
             return view('customers.table', compact('customers'))->render();
         }
         return view('customers.index', compact('customers'));
+    }
+
+    public function create(UserService $userService)
+    {
+        $employees = $userService->getAll(['roles' => ['employee']]);
+        return view('customers.create', compact('employees'));
+    }
+
+    public function store(StoreRequest $request)
+    {
+        try {
+            $this->customerService->create($request->validated());
+            return redirect()->route('customers.index')->withMessage('Customer Created Successfully');
+        } catch (\Throwable $t) {
+            return $t->getMessage();
+        }
     }
 }

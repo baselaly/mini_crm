@@ -18,6 +18,12 @@ class Customer extends Model
     protected $fillable = [
         'name', 'email', 'phone', 'source', 'employee_id'
     ];
+
+    /**
+     * @var array
+     */
+    protected $with = ['employee'];
+
     /**
      * @param mixed $value
      * 

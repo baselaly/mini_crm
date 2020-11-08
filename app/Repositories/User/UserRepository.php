@@ -5,6 +5,7 @@ namespace App\Repositories\User;
 use App\Models\User;
 use App\QueryFilters\User\IdFilter;
 use App\QueryFilters\User\KeywordFilter;
+use App\QueryFilters\User\RoleFilter;
 use Illuminate\Pipeline\Pipeline;
 
 class UserRepository implements UserRepositoryInterface
@@ -28,16 +29,19 @@ class UserRepository implements UserRepositoryInterface
      * 
      * @return [type]
      */
-    public function getAll(array $data = [], int $perPage = 10)
+    public function getAll(array $data = [], int $perPage = 0)
     {
-        return app(Pipeline::class)
+        $users = app(Pipeline::class)
             ->send($this->user->query())
             ->through([
                 new KeywordFilter($data),
-                new IdFilter($data)
+                new IdFilter($data),
+                new RoleFilter($data)
             ])
             ->thenReturn()
-            ->latest()->paginate($perPage);
+            ->latest();
+
+        return $perPage ? $users->paginate($perPage) : $users->get();
     }
 
     /**
@@ -51,7 +55,8 @@ class UserRepository implements UserRepositoryInterface
             ->send($this->user->query())
             ->through([
                 new KeywordFilter($data),
-                new IdFilter($data)
+                new IdFilter($data),
+                new RoleFilter($data)
             ])
             ->thenReturn()
             ->latest()->firstOrFail();

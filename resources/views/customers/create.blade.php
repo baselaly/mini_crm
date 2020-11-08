@@ -44,6 +44,16 @@
                         </div>
                         <div class="help-info">ex:(compaign-email-facebook...)</div>
                     </div>
+                    <div>
+                        <div>
+                            <p><b>* Employee</b></p>
+                            <select name="employee_id" value="{{old('employee_id')}}">
+                                @foreach($employees as $employee)
+                                <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <button style="margin-top:20px;" class="btn btn-primary waves-effect" type="submit">Create</button>
                 </form>
             </div>

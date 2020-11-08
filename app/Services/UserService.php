@@ -26,7 +26,7 @@ class UserService
      * 
      * @return [type]
      */
-    public function getAll(array $filters = [], int $perPage = 10)
+    public function getAll(array $filters = [], int $perPage = 0)
     {
         return $this->userRepo->getAll($filters, $perPage);
     }

@@ -24,7 +24,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = $this->userService->getAll(['keyword' => request('keyword')]);
+        $users = $this->userService->getAll(['keyword' => request('keyword')], $perPage = 10);
         if (request()->ajax()) {
             return view('users.table', compact('users'))->render();
         }

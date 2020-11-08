@@ -3,6 +3,8 @@
 namespace App\Repositories\Customer;
 
 use App\Models\Customer;
+use App\QueryFilters\Customer\IdFilter;
+use App\QueryFilters\Customer\KeywordFilter;
 use Illuminate\Pipeline\Pipeline;
 
 class CustomerRepository implements CustomerRepositoryInterface
@@ -26,13 +28,18 @@ class CustomerRepository implements CustomerRepositoryInterface
      * 
      * @return [type]
      */
-    public function getAll(array $data = [], int $perPage = 10)
+    public function getAll(array $data = [], int $perPage = 0)
     {
-        return app(Pipeline::class)
+        $customers = app(Pipeline::class)
             ->send($this->customer->query())
-            ->through([])
+            ->through([
+                new IdFilter($data),
+                new KeywordFilter($data)
+            ])
             ->thenReturn()
-            ->latest()->paginate($perPage);
+            ->latest();
+
+        return $perPage ? $customers->paginate($perPage) : $customers->get();
     }
 
     /**
@@ -44,7 +51,10 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         return app(Pipeline::class)
             ->send($this->customer->query())
-            ->through([])
+            ->through([
+                new IdFilter($data),
+                new KeywordFilter($data)
+            ])
             ->thenReturn()
             ->latest()->firstOrFail();
     }
