@@ -26,7 +26,7 @@
             <ul class="list">
                 <li class="header">MAIN NAVIGATION</li>
                 <li>
-                    <a href="">
+                    <a href="{{route('customers.index')}}">
                         <i class="material-icons">people</i>
                         <span>Customers</span>
                     </a>
