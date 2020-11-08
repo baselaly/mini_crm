@@ -49,6 +49,9 @@
                         <div>
                             <p><b>* Employee</b></p>
                             <select name="employee_id">
+                                @if(!old('employee_id'))
+                                <option selected disabled>select employee</option>
+                                @endif
                                 @foreach($employees as $employee)
                                 <option {{old('employee_id')==$employee->id?'selected':''}} value="{{$employee->id}}">{{$employee->name}}</option>
                                 @endforeach

@@ -55,8 +55,11 @@
                         <div>
                             <p><b>* Roles</b></p>
                             <select name="role" value="{{old('role')}}">
+                                @if(!old('role'))
+                                <option selected disabled>select role</option>
+                                @endif
                                 @foreach($roles as $role)
-                                <option value="{{$role->name}}">{{$role->name}}</option>
+                                <option {{old('role')==$role->name?'selected':''}} value="{{$role->name}}">{{$role->name}}</option>
                                 @endforeach
                             </select>
                         </div>

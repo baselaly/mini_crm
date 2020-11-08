@@ -1,3 +1,4 @@
+@if(count($customers)>0)
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -19,6 +20,9 @@
                 <a href="{{route('customers.edit',$customer->id)}}" type="button" class="btn bg-blue btn-circle waves-effect waves-circle waves-float">
                     <i class="material-icons">edit</i>
                 </a>
+                <a href="{{route('customers.action',$customer->id)}}" type="button" class="btn bg-green">
+                    actions
+                </a>
             </td>
         </tr>
         @endforeach
@@ -27,3 +31,8 @@
 <div style="text-align:center;">
     {{ $customers->links("pagination::bootstrap-4") }}
 </div>
+@else
+<div class="alert bg-red">
+    no customers found
+</div>
+@endif

@@ -19,15 +19,9 @@
                     </div>
                 </div>
             </div>
-            @if(count($customers)>0)
             <div class="body table-responsive customers">
                 @include('customers.table')
             </div>
-            @else
-            <div class="alert bg-red">
-                no customers found
-            </div>
-            @endif
         </div>
     </div>
 </div>

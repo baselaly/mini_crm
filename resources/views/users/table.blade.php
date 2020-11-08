@@ -1,3 +1,4 @@
+@if(count($users)>0)
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -27,3 +28,8 @@
 <div style="text-align:center;">
     {{ $users->links("pagination::bootstrap-4") }}
 </div>
+@else
+<div class="alert bg-red">
+    no users found
+</div>
+@endif

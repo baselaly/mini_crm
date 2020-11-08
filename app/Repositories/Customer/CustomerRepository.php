@@ -34,6 +34,7 @@ class CustomerRepository implements CustomerRepositoryInterface
             new EmployeeFilter($filters)
         ];
     }
+
     /**
      * @param array $data
      * @param int $perPage

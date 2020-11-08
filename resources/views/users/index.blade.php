@@ -19,15 +19,9 @@
                     </div>
                 </div>
             </div>
-            @if(count($users)>0)
             <div class="body table-responsive users">
                 @include('users.table')
             </div>
-            @else
-            <div class="alert bg-red">
-                no users found
-            </div>
-            @endif
         </div>
     </div>
 </div>
