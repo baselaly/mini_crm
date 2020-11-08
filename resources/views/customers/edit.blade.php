@@ -45,6 +45,16 @@
                         </div>
                         <div class="help-info">ex:(compaign-email-facebook...)</div>
                     </div>
+                    <div>
+                        <div>
+                            <p><b>* Employee</b></p>
+                            <select name="employee_id" value="{{$customer->employee_id}}">
+                                @foreach($employees as $employee)
+                                <option {{$customer->employee_id==$employee->id?'selected':''}} value="{{$employee->id}}">{{$employee->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <button style="margin-top:20px;" class="btn btn-primary waves-effect" type="submit">Save</button>
                 </form>
             </div>

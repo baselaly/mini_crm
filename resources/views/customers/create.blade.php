@@ -47,9 +47,9 @@
                     <div>
                         <div>
                             <p><b>* Employee</b></p>
-                            <select name="employee_id" value="{{old('employee_id')}}">
+                            <select name="employee_id">
                                 @foreach($employees as $employee)
-                                <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                <option {{old('employee_id')==$employee->id?'selected':''}} value="{{$employee->id}}">{{$employee->name}}</option>
                                 @endforeach
                             </select>
                         </div>

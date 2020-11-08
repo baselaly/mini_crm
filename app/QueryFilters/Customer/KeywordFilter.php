@@ -21,7 +21,10 @@ class KeywordFilter
             $filters = $this->filters;
             return $builder->where(function ($query) use ($filters) {
                 $query->where('name', 'LIKE', "%" . $filters['keyword'] . "%")->orWhere('email', 'LIKE', "%" . $filters['keyword'] . "%")
-                    ->orWhere('phone', 'LIKE', "%" . $filters['keyword'] . "%")->orWhere('source', "%" . $filters['keyword'] . "%");
+                    ->orWhere('phone', 'LIKE', "%" . $filters['keyword'] . "%")->orWhere('source', "%" . $filters['keyword'] . "%")
+                    ->orWhereHas('employee', function ($query) use ($filters) {
+                        $query->where('name', 'LIKE', '%' . $filters['keyword'] . '%');
+                    });
             });
         }
         return $builder;
