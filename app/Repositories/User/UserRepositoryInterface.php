@@ -34,4 +34,9 @@ interface UserRepositoryInterface
      * @return bool
      */
     public function update(User $user, array $data): bool;
+
+    /**
+     * @return array
+     */
+    public function filters(array $filters): array;
 }

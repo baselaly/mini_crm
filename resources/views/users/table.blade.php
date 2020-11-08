@@ -25,5 +25,5 @@
     </tbody>
 </table>
 <div style="text-align:center;">
-    {{ $users->links() }}
+    {{ $users->links("pagination::bootstrap-4") }}
 </div>

@@ -34,4 +34,9 @@ interface CustomerRepositoryInterface
      * @return bool
      */
     public function update(Customer $customer, array $data): bool;
+
+    /**
+     * @return array
+     */
+    public function filters(array $filters): array;
 }

@@ -24,6 +24,18 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @return array
+     */
+    public function filters($filters): array
+    {
+        return [
+            new KeywordFilter($filters),
+            new IdFilter($filters),
+            new RoleFilter($filters)
+        ];
+    }
+
+    /**
      * @param array $data
      * @param int $perPage
      * 
@@ -33,11 +45,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $users = app(Pipeline::class)
             ->send($this->user->query())
-            ->through([
-                new KeywordFilter($data),
-                new IdFilter($data),
-                new RoleFilter($data)
-            ])
+            ->through($this->filters($data))
             ->thenReturn()
             ->latest();
 
@@ -53,11 +61,7 @@ class UserRepository implements UserRepositoryInterface
     {
         return app(Pipeline::class)
             ->send($this->user->query())
-            ->through([
-                new KeywordFilter($data),
-                new IdFilter($data),
-                new RoleFilter($data)
-            ])
+            ->through($this->filters($data))
             ->thenReturn()
             ->latest()->firstOrFail();
     }

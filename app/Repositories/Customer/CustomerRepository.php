@@ -24,6 +24,17 @@ class CustomerRepository implements CustomerRepositoryInterface
     }
 
     /**
+     * @return array
+     */
+    public function filters($filters): array
+    {
+        return [
+            new IdFilter($filters),
+            new KeywordFilter($filters),
+            new EmployeeFilter($filters)
+        ];
+    }
+    /**
      * @param array $data
      * @param int $perPage
      * 
@@ -33,11 +44,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         $customers = app(Pipeline::class)
             ->send($this->customer->query())
-            ->through([
-                new IdFilter($data),
-                new KeywordFilter($data),
-                new EmployeeFilter($data)
-            ])
+            ->through($this->filters($data))
             ->thenReturn()
             ->latest();
 
@@ -53,11 +60,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         return app(Pipeline::class)
             ->send($this->customer->query())
-            ->through([
-                new IdFilter($data),
-                new KeywordFilter($data),
-                new EmployeeFilter($data)
-            ])
+            ->through($this->filters($data))
             ->thenReturn()
             ->latest()->firstOrFail();
     }
