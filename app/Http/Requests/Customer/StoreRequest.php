@@ -23,13 +23,19 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|max:200',
             'email' => 'required|email|max:200|unique:customers,email',
             'phone' => 'required|numeric|min:1|digits_between:1,20|unique:customers,phone',
             'source' => 'required|max:200',
-            'employee_id' => 'required|exists:users,id'
         ];
+
+        // if its admin check for employee id
+        if (auth()->user()->hasRole('admin')) {
+            $rules['employee_id'] = 'required|exists:users,id';
+        }
+
+        return $rules;
     }
 
     public function messages()

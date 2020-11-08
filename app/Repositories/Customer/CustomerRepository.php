@@ -3,6 +3,7 @@
 namespace App\Repositories\Customer;
 
 use App\Models\Customer;
+use App\QueryFilters\Customer\EmployeeFilter;
 use App\QueryFilters\Customer\IdFilter;
 use App\QueryFilters\Customer\KeywordFilter;
 use Illuminate\Pipeline\Pipeline;
@@ -34,7 +35,8 @@ class CustomerRepository implements CustomerRepositoryInterface
             ->send($this->customer->query())
             ->through([
                 new IdFilter($data),
-                new KeywordFilter($data)
+                new KeywordFilter($data),
+                new EmployeeFilter($data)
             ])
             ->thenReturn()
             ->latest();
@@ -53,7 +55,8 @@ class CustomerRepository implements CustomerRepositoryInterface
             ->send($this->customer->query())
             ->through([
                 new IdFilter($data),
-                new KeywordFilter($data)
+                new KeywordFilter($data),
+                new EmployeeFilter($data)
             ])
             ->thenReturn()
             ->latest()->firstOrFail();

@@ -24,7 +24,9 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = $this->customerService->getAll(['keyword' => request('keyword')], $perPage = 10);
+        $filters = ['keyword' => request('keyword')];
+        !auth()->user()->hasRole('admin') ? $filters['employee_id'] = auth()->id() : '';
+        $customers = $this->customerService->getAll($filters, $perPage = 10);
         if (request()->ajax()) {
             return view('customers.table', compact('customers'))->render();
         }
@@ -33,14 +35,18 @@ class CustomerController extends Controller
 
     public function create(UserService $userService)
     {
-        $employees = $userService->getAll(['roles' => ['employee']]);
+        // if its admin so we need to get employees for dropdown in view
+        $employees = auth()->user()->hasRole('admin') ? $userService->getAll(['roles' => ['employee']]) : [];
         return view('customers.create', compact('employees'));
     }
 
     public function store(StoreRequest $request)
     {
         try {
-            $this->customerService->create($request->validated());
+            $validatedData = $request->validated();
+            // if no employee id sent in request and pass the validation then its employee so we will inject its id
+            !in_array('employee_id', $validatedData) ? $validatedData['employee_id'] = auth()->id() : '';
+            $this->customerService->create($validatedData);
             return redirect()->route('customers.index')->withMessage('Customer Created Successfully');
         } catch (\Throwable $t) {
             return $t->getMessage();
@@ -49,16 +55,31 @@ class CustomerController extends Controller
 
     public function edit($id, UserService $userService)
     {
-        $employees = $userService->getAll(['roles' => ['employee']]);
-        $customer = $this->customerService->getSingleBy(['id' => $id]);
+        $employees = [];
+        $filters = ['id' => $id];
+        // if its admin so we need to get employees for dropdown in view
+        if (auth()->user()->hasRole('admin')) {
+            $employees =  $userService->getAll(['roles' => ['employee']]);
+        }
+        if (auth()->user()->hasRole('employee')) {
+            $filters['employee_id'] = auth()->id();
+        }
+        $customer = $this->customerService->getSingleBy($filters);
         return view('customers.edit', compact('employees', 'customer'));
     }
 
     public function update($id, UpdateRequest $request)
     {
         try {
-            $customer = $this->customerService->getSingleBy(['id' => $id]);
-            $this->customerService->update($customer, $request->validated());
+            $validatedData = $request->validated();
+            $filters = ['id' => $id];
+            // if no employee id sent in request and pass the validation then its employee so we will inject its id
+            if (!in_array('employee_id', $validatedData)) {
+                $validatedData['employee_id'] = auth()->id();
+                $filters['employee_id'] = auth()->id();
+            }
+            $customer = $this->customerService->getSingleBy($filters);
+            $this->customerService->update($customer, $validatedData);
             return redirect()->route('customers.index')->withMessage('Customer Updated Successfully');
         } catch (\Throwable $t) {
             return $t->getMessage();

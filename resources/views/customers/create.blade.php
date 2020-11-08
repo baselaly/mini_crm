@@ -44,6 +44,7 @@
                         </div>
                         <div class="help-info">ex:(compaign-email-facebook...)</div>
                     </div>
+                    @role('admin')
                     <div>
                         <div>
                             <p><b>* Employee</b></p>
@@ -54,6 +55,7 @@
                             </select>
                         </div>
                     </div>
+                    @endrole
                     <button style="margin-top:20px;" class="btn btn-primary waves-effect" type="submit">Create</button>
                 </form>
             </div>
