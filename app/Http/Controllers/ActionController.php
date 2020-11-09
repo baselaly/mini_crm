@@ -58,9 +58,9 @@ class ActionController extends Controller
             // to make sure that authenticated user is authorized to see that user actions
             $customer = $customerService->getSingleBy($customerFilters);
             $this->actionService->create(array_merge($request->validated(), ['customer_id' => $customer->id]));
-            return redirect()->route('customers.action', $customer->id);
+            return response()->json(['redirect_url' => route('customers.action', $customer->id), 'message' => 'Action created successfully']);
         } catch (\Throwable $t) {
-            return $t->getMessage();
+            return response()->json(['message' => $t->getMessage()], 500);
         }
     }
 }

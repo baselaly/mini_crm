@@ -4,6 +4,7 @@
         <tr>
             <th>Type</th>
             <th>Description</th>
+            <th>Record</th>
         </tr>
     </thead>
     <tbody>
@@ -11,6 +12,15 @@
         <tr>
             <td>{{$action->type}}</td>
             <td>{{$action->description}}</td>
+            <td>
+                @if($action->record)
+                <audio controls>
+                    <source src="{{$action->record}}" type="audio/mpeg">
+                </audio>
+                @else
+                N/A
+                @endif
+            </td>
         </tr>
         @endforeach
     </tbody>

@@ -1,101 +1,151 @@
-//webkitURL is deprecated but nevertheless 
-URL = window.URL || window.webkitURL;
-var gumStream;
-//stream from getUserMedia() 
-var rec;
-//Recorder.js object 
-var input;
-//MediaStreamAudioSourceNode we'll be recording 
-// shim for AudioContext when it's not avb. 
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext = new AudioContext;
-//new audio context to help us record 
-var recordButton = document.getElementById("recordButton");
-var stopButton = document.getElementById("stopButton");
-var pauseButton = document.getElementById("pauseButton");
-//add events to those 3 buttons 
-recordButton.addEventListener("click", startRecording);
-stopButton.addEventListener("click", stopRecording);
-pauseButton.addEventListener("click", pauseRecording);
+const record = document.querySelector('.record');
+const stop = document.querySelector('.stop');
+const soundClips = document.querySelector('.sound-clips');
+const recordState = document.querySelector('#recordState');
+const loader = document.querySelector('.page-loader-wrapper');
+const errorHolder = $('#error-container');
+const messageHolder = $('#message-container');
 
-var constraints = {
-    audio: true,
-    video: false
-}
-/* Disable the record button until we get a success or fail from getUserMedia() */
+let RecordFile = '';
 
-recordButton.disabled = false;
-stopButton.disabled = true;
-pauseButton.disabled = true;
+record.onclick = function () {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        console.log('getUserMedia supported.');
+        navigator.mediaDevices.getUserMedia(
+            // constraints - only audio needed for this app
+            {
+                audio: true
+            })
+            // Success callback
+            .then(function (stream) {
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                console.log(mediaRecorder.state);
+                console.log("recorder started");
+                recordState.innerHTML = 'Recording.....'
+                stop.disabled = false;
+                record.disabled = true;
 
-function startRecording() {
-    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        /* assign to gumStream for later use */
-        gumStream = stream;
-        /* use the stream */
-        input = audioContext.createMediaStreamSource(stream);
-        /* Create the Recorder object and configure to record mono sound (1 channel) Recording 2 channels will double the file size */
-        rec = new Recorder(input, {
-            numChannels: 1
-        })
-        //start the recording process 
-        rec.record()
-        console.log("Recording started");
-        recordButton.disabled = true;
-        stopButton.disabled = false;
-        pauseButton.disabled = false;
-    }).catch(function (err) {
-        //enable the record button if getUserMedia() fails 
-        recordButton.disabled = false;
-        stopButton.disabled = true;
-        pauseButton.disabled = true
-    });
-}
+                let chunks = [];
 
-function pauseRecording() {
-    console.log("pauseButton clicked rec.recording=", rec.recording);
-    if (rec.recording) {
-        //pause 
-        rec.stop();
-        pauseButton.innerHTML = "Resume";
+                mediaRecorder.ondataavailable = function (e) {
+                    chunks.push(e.data);
+                }
+
+                stop.onclick = function () {
+                    mediaRecorder.stop();
+                    console.log(mediaRecorder.state);
+                    console.log("recorder stopped");
+                    record.disabled = false;
+                    stop.disabled = true;
+                }
+
+                mediaRecorder.onstop = function (e) {
+                    console.log("recorder stopped");
+                    recordState.innerHTML = 'Recording stopped , you may record new one by click Record';
+                    const audio = document.createElement('audio');
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = "Delete";
+
+                    audio.setAttribute('controls', '');
+                    audio.style.verticalAlign = 'middle';
+                    deleteButton.style.verticalAlign = 'middle'
+                    deleteButton.style.margin = '0px 10px'
+                    deleteButton.setAttribute('type', 'button')
+                    soundClips.innerHTML = '';
+                    soundClips.append(deleteButton);
+                    soundClips.append(audio);
+
+                    const blob = new Blob(chunks, { 'type': 'audio/ogg;' });
+                    chunks = [];
+                    const audioURL = window.URL.createObjectURL(blob);
+                    audio.src = audioURL;
+                    var fileObject = new File([blob], 'record', {
+                        type: 'audio/ogg'
+                    });
+                    RecordFile = fileObject;
+                    deleteButton.onclick = function (e) {
+                        soundClips.innerHTML = '';
+                        RecordFile = ''
+                    }
+                }
+            })
+            // Error callback
+            .catch(function (err) {
+                alert('The following getUserMedia error occured:');
+            }
+            );
     } else {
-        //resume 
-        rec.record()
-        pauseButton.innerHTML = "Pause";
+        alert('getUserMedia not supported on your browser!');
     }
 }
 
-function stopRecording() {
-    console.log("stopButton clicked");
-    //disable the stop button, enable the record too allow for new recordings 
-    stopButton.disabled = true;
-    recordButton.disabled = false;
-    pauseButton.disabled = true;
-    //reset button just in case the recording is stopped while paused 
-    pauseButton.innerHTML = "Pause";
-    //tell the recorder to stop the recording 
-    rec.stop(); //stop microphone access 
-    gumStream.getAudioTracks()[0].stop();
-    //create the wav blob and pass it on to createDownloadLink 
-    rec.exportWAV(createDownloadLink);
+$(".createButton").click(function (e) {
+    e.preventDefault();
+    showLoader();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Accept': 'application/json'
+        }
+    });
+    var formData = new FormData();
+    formData.append('type', $('#type').val());
+    formData.append('description', $('#description').val());
+    formData.append('record', RecordFile)
+    let api = $(this).parent('form').attr('action');
+    $.ajax({
+        url: api,
+        data: formData,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        success: function (response) {
+            document.documentElement.scrollTop = 0;
+            console.log(response.message)
+            appendMessage(response.message)
+            hideLoader();
+            document.documentElement.scrollTop = 0;
+            setTimeout(function () {
+                window.location.replace(response.redirect_url);
+            }, 1000);
+        },
+        error: function (error) {
+            console.log(error)
+            let Error = error.responseJSON
+            if (Error.errors && Array.isArray(Error.errors)) {
+                appendErrors(Error.errors)
+            } else {
+                appendErrors([Error.message])
+            }
+            hideLoader();
+            document.documentElement.scrollTop = 0;
+        }
+    });
+    return false;
+})
+
+function showLoader() {
+    loader.style.display = "block";
 }
 
-function createDownloadLink(blob) {
-    var url = URL.createObjectURL(blob);
-    var au = document.createElement('audio');
-    var li = document.createElement('li');
-    var link = document.createElement('a');
-    //add controls to the <audio> element 
-    au.controls = true;
-    au.src = url;
-    //link the a element to the blob 
-    link.href = url;
-    link.download = new Date().toISOString() + '.wav';
-    link.innerHTML = link.download;
-    //add the new audio and a elements to the li element 
-    li.appendChild(au);
-    li.appendChild(link);
-    //add the li element to the ordered list 
-    recordingsList.appendChild(li);
+function hideLoader() {
+    loader.style.display = "none";
+}
+
+function appendMessage(message) {
+    messageHolder.innerHTML = '';
+    messageHolder.show();
+    errorHolder.hide();
+    messageHolder.html(message)
+}
+
+function appendErrors(errors) {
+    errorHolder.innerHTML = '';
+    errorHolder.show()
+    messageHolder.hide()
+    errors.forEach(error => {
+        console.log(error)
+        errorHolder.append('<strong>' + error + '</strong><br>')
+    });
 }
