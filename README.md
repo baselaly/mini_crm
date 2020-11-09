@@ -1,6 +1,6 @@
 - open cmd run git clone https://github.com/baselaly/mini_crm.git in folder you want to put the project in it
 - or Download ZIP it through github link
-- ** run cp .env.example .env and change Database credentials by yours
+- ** run copy .env.example .env and change Database credentials by yours
 - ** run composer install
 - ** run php artisan migrate for creating database tables
 - ** run php artisan db:seed for generating roles-super admin
