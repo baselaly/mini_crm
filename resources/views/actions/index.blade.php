@@ -46,7 +46,7 @@
                 <div class="form-group form-float" style="margin-top:50px;">
                     <div class="form-line">
                         <input type="text" value="{{request('keyword')}}" class="form-control" id="search" name="search" required>
-                        <label class="form-label">* Search</label>
+                        <label class="form-label">* Search actions</label>
                     </div>
                 </div>
             </div>

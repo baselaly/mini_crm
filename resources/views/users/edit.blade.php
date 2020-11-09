@@ -52,8 +52,8 @@
                         </div>
                         <div class="help-info"></div>
                     </div>
-                    <div>
-                        <div>
+                    <div class="form-group form-float">
+                        <div class="form-line">
                             <p><b>* Roles</b></p>
                             <select name="role" value="{{old('role')}}">
                                 @foreach($roles as $role)

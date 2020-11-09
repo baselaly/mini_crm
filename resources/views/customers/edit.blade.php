@@ -46,8 +46,8 @@
                         <div class="help-info">ex:(compaign-email-facebook...)</div>
                     </div>
                     @role('admin')
-                    <div>
-                        <div>
+                    <div class="form-group form-float">
+                        <div class="form-line">
                             <p><b>* Employee</b></p>
                             <select name="employee_id" value="{{$customer->employee_id}}">
                                 @foreach($employees as $employee)

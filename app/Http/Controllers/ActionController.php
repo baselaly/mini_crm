@@ -29,7 +29,7 @@ class ActionController extends Controller
         }
         // to make sure that authenticated user is authorized to see that actions
         $customer = $customerService->getSingleBy($customerFilters);
-        $actions = $this->actionService->getAll(['customer_id' => $customerId, 'keyword' => request('keyword')], $perPage = 10);
+        $actions = $this->actionService->getAll(['customer_id' => $customerId, 'keyword' => request('keyword')], $perPage = 5);
         if (request()->ajax()) {
             return view('actions.table', compact('actions'))->render();
         }
