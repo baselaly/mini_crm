@@ -105,10 +105,7 @@ $(".createButton").click(function (e) {
             console.log(response.message)
             appendMessage(response.message)
             hideLoader();
-            document.documentElement.scrollTop = 0;
-            setTimeout(function () {
-                window.location.replace(response.redirect_url);
-            }, 1000);
+            window.scrollTo(0, 350);
         },
         error: function (error) {
             console.log(error)
@@ -119,7 +116,7 @@ $(".createButton").click(function (e) {
                 appendErrors([Error.message])
             }
             hideLoader();
-            document.documentElement.scrollTop = 0;
+            window.scrollTo(0, 350);
         }
     });
     return false;
@@ -134,14 +131,14 @@ function hideLoader() {
 }
 
 function appendMessage(message) {
-    messageHolder.innerHTML = '';
+    messageHolder.html('');
     messageHolder.show();
     errorHolder.hide();
     messageHolder.html(message)
 }
 
 function appendErrors(errors) {
-    errorHolder.innerHTML = '';
+    errorHolder.html('');
     errorHolder.show()
     messageHolder.hide()
     errors.forEach(error => {
